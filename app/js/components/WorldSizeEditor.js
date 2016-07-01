@@ -7,9 +7,14 @@
 'use strict'
 
 import type {WorldAction} from '../actions/WorldActions';
+import type {WorldObject} from '../stores/WorldStore';
 
 import React, {Component} from 'react';
+import {Map} from 'immutable';
 import Random from 'random-js';
+
+import {DEFAULT_WORLD_PXDIMENSION_WIDTH,
+        DEFAULT_WORLD_PXDIMENSION_HEIGHT} from '../stores/WorldStore';
 
 import {dispatch} from '../dispatcher/WorldDispatcher';
 import WorldConstants from '../constants/WorldConstants';
@@ -25,8 +30,8 @@ type State = {
 export default class WorldSizeEditor extends Component<void, Props, State>
 {
     state: State = {
-        width: 600,
-        height: 400
+        width: DEFAULT_WORLD_PXDIMENSION_WIDTH,
+        height: DEFAULT_WORLD_PXDIMENSION_HEIGHT
     };
 
     render(): ?React.Element {
@@ -48,29 +53,33 @@ export default class WorldSizeEditor extends Component<void, Props, State>
     _onInputChange(evt: Event): void {
         var state: State = Object.assign({}, this.state);
 
-        if(evt.target instanceof HTMLInputElement) {
-            state[evt.target.name] = parseInt(evt.target.value);
+        if(evt.target.name && evt.target.value) {
+            state[evt.target.name] = evt.target.value;
+            this.setState(state);
         }
-
-        this.setState(state);
 
         dispatch({
             type: WorldConstants.UPDATE_WORLD_SIZE,
-            payload: {
-                pxWidth: state.width,
-                pxHeight: state.height
-            }
+            payload: Map({
+                width: state.width,
+                height: state.height
+            })
         });
     }
 
     _onDrawClick(evt: Event): void {
-        var square: React.Element = (
-            <Square x={randomInt()} y={randomInt()} key={randomString()} />
-        );
+        var squareObj: WorldObject = {
+            id: randomString(),
+            component: Square,
+            location: {
+                x: randomX(),
+                y: randomY()
+            }
+        };
 
         dispatch({
-            type: WorldConstants.ADD_DRAWABLE,
-            payload: square
+            type: WorldConstants.ADD_OBJECT,
+            payload: squareObj
         });
     }
 }
@@ -78,12 +87,17 @@ export default class WorldSizeEditor extends Component<void, Props, State>
 /**
  * Helpers
  **/
-var randomEngine = Random.engines.mt19937().autoSeed();
-var intDistribution = Random.integer(0, 600);
-var strDistribution = Random.string();
+var randomEngine = Random.engines.mt19937().autoSeed(),
+    xDistribution = Random.integer(-1200, 1200),
+    yDistribution = Random.integer(-800, 800),
+    strDistribution = Random.string();
 
-function randomInt(): number {
-    return intDistribution(randomEngine);
+function randomX(): number {
+    return xDistribution(randomEngine);
+}
+
+function randomY(): number {
+    return yDistribution(randomEngine);
 }
 
 function randomString(): string {

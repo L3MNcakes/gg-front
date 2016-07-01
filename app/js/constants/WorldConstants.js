@@ -9,6 +9,7 @@
 import keyMirror from 'keymirror';
 
 export default keyMirror({
+    ADD_OBJECT: null,
     UPDATE_WORLD_SIZE: null,
     ADD_DRAWABLE: null
 });

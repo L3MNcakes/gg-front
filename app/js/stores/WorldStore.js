@@ -14,29 +14,53 @@ import {MapStore} from 'flux/utils';
 import WorldDispatcher from '../dispatcher/WorldDispatcher';
 import WorldConstants from '../constants/WorldConstants';
 
-type WorldState = Map<string, any>;
+export type WorldObject = {
+    id: string,
+    component: any,
+    location: {
+        x: number,
+        y: number
+    }
+};
+
+export const DEFAULT_WORLD_PXDIMENSION_WIDTH = 600;
+export const DEFAULT_WORLD_PXDIMENSION_HEIGHT = 400;
 
 class WorldStore extends MapStore
 {
-    getInitialState(): WorldState {
+    getInitialState(): Map<string, any> {
         return new Map({
-            pxWidth: 600,
-            pxHeight: 400,
-            drawables: new List()
+            pxDimension: Map({
+                width: DEFAULT_WORLD_PXDIMENSION_WIDTH,
+                height: DEFAULT_WORLD_PXDIMENSION_HEIGHT
+            }),
+
+            viewport: Map({
+                x: -1 * (DEFAULT_WORLD_PXDIMENSION_WIDTH / 2),
+                y: -1 * (DEFAULT_WORLD_PXDIMENSION_HEIGHT / 2)
+            }),
+
+            worldObjects: List()
         });
     }
 
-    reduce(state: WorldState, action: WorldAction): WorldState{
+    reduce(state: Map<string, any>, action: WorldAction): Map<string, any> {
         switch(action.type) {
+            case WorldConstants.ADD_OBJECT:
+                var currObjects = state.get('worldObjects'),
+                    newObjects = currObjects.push(action.payload);
+
+                return state.set('worldObjects', newObjects);
             case WorldConstants.UPDATE_WORLD_SIZE:
-                return state.merge(action.payload);
+                var currPxDimension = state.get('pxDimension'),
+                    newPxDimension = currPxDimension.merge(action.payload);
+
+                return state.set('pxDimension', newPxDimension);
             case WorldConstants.ADD_DRAWABLE:
                 var currDrawables = state.get('drawables'),
                     newDrawables = currDrawables.push(action.payload);
 
-                return state.merge(new Map({
-                    drawables: newDrawables
-                }));
+                return state.set('drawables', newDrawables);
             default:
                 return state;
         }

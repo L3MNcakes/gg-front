@@ -13,9 +13,7 @@ type Props = {
     y: number
 };
 
-type State = {
-
-};
+type State = {};
 
 type Style = {
     fill: string
@@ -23,6 +21,8 @@ type Style = {
 
 export default class Square extends Component<void, Props, State>
 {
+    state: State;
+
     style: Style = {
         fill: randomColor()
     };
