@@ -8,7 +8,7 @@
 
 import type {WorldAction} from '../actions/WorldActions';
 
-import {Map} from 'immutable';
+import {Map, List} from 'immutable';
 import {MapStore} from 'flux/utils';
 
 import WorldDispatcher from '../dispatcher/WorldDispatcher';
@@ -21,16 +21,24 @@ class WorldStore extends MapStore
     getInitialState(): WorldState {
         return new Map({
             pxWidth: 600,
-            pxHeight: 400
+            pxHeight: 400,
+            drawables: new List()
         });
     }
 
-    __onDispatch(action: WorldAction): void {
+    reduce(state: WorldState, action: WorldAction): WorldState{
         switch(action.type) {
             case WorldConstants.UPDATE_WORLD_SIZE:
-                break;
+                return state.merge(action.payload);
+            case WorldConstants.ADD_DRAWABLE:
+                var currDrawables = state.get('drawables'),
+                    newDrawables = currDrawables.push(action.payload);
+
+                return state.merge(new Map({
+                    drawables: newDrawables
+                }));
             default:
-                // Nothing, yet
+                return state;
         }
     }
 }

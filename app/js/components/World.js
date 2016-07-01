@@ -10,7 +10,8 @@ import React, {Component} from 'react';
 
 type Props = {
     width: number,
-    height: number
+    height: number,
+    children: Array<React.Element>
 };
 
 export default class World extends Component<void, Props, void>
@@ -22,8 +23,10 @@ export default class World extends Component<void, Props, void>
             <svg
                 width={this.props.width}
                 height={this.props.height}
-                style={{border: '1px solid black'}}
-            ></svg>
+                style={{border: '1px solid black', backgroundColor: '#222'}}
+            >
+                {this.props.children}
+            </svg>
         );
     }
 }

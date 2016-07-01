@@ -9,32 +9,44 @@
 import React, {Component} from 'react';
 import {Container} from 'flux/utils';
 
-import GameStore from '../stores/GameStore';
 import WorldStore from '../stores/WorldStore';
 
 import World from './World';
+import WorldSizeEditor from './WorldSizeEditor';
 
-type State = {};
+type State = {
+    worldWidth: number,
+    worldHeight: number,
+    drawables: Array<React.Element>
+};
 
 class VillageCellAuto extends Component<void, void, State>
 {
     state: State;
 
     static getStores() {
-        return [GameStore, WorldStore];
+        return [WorldStore];
     }
 
-    static calculateState(prevState) {
-        return {};
+    static calculateState(prevState: State) {
+        return {
+            worldWidth: WorldStore.get('pxWidth'),
+            worldHeight: WorldStore.get('pxHeight'),
+            drawables: WorldStore.get('drawables')
+        };
     }
 
-    render() {
-        console.log(WorldStore);
+    render(): ?React.Element {
         return (
-            <World
-                width={WorldStore.get('pxWidth')}
-                height={WorldStore.get('pxHeight')}
-            />
+            <div>
+                <World
+                    width={this.state.worldWidth}
+                    height={this.state.worldHeight}
+                >
+                    {this.state.drawables}
+                </World>
+                <WorldSizeEditor />
+            </div>
         );
     }
 }

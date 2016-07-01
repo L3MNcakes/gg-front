@@ -6,6 +6,7 @@
  **/
 'use strict'
 
+import React from 'react';
 import WorldConstants from '../constants/WorldConstants';
 
 export type WorldAction = {
@@ -14,4 +15,7 @@ export type WorldAction = {
             pxWidth: number,
             pxHeight: number
         }
+    } | {
+        type: WorldConstants.ADD_DRAWABLE,
+        payload: ?React.Element
     };
