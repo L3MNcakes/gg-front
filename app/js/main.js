@@ -8,9 +8,16 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import VillageCellAuto from './components/VillageCellAuto';
+import localforage from 'localforage';
+
+import App from './components/App';
+
+localforage.config({
+    name: 'VCAEngine',
+    storeName: 'vcaEngineStore'
+});
 
 ReactDOM.render(
-    <VillageCellAuto />,
-    document.getElementById('VillageApp')
+    <App />,
+    document.getElementById('App')
 );

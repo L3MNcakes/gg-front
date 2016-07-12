@@ -7,9 +7,10 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     sourcemaps = require('gulp-sourcemaps'),
     buffer = require('vinyl-buffer'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    sass = require('gulp-sass');
 
-gulp.task('default', ['scripts', 'html', 'flow'], function() {
+gulp.task('default', ['scripts', 'html', 'css'], function() {
     // Default task
 });
 
@@ -44,6 +45,16 @@ var handleScriptsError = function(err) {
 gulp.task('html', function() {
     gulp.src('./app/**/*.html')
         .pipe(gulp.dest('dist'));
+});
+
+/**
+ * CSS task
+ **/
+gulp.task('css', function() {
+    gulp.src('./app/scss/concise.css-3.4.0/src/concise.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(rename('app.css'))
+        .pipe(gulp.dest('dist/css'));
 });
 
 /**
